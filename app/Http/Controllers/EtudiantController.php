@@ -10,7 +10,8 @@ class EtudiantController extends Controller
     public function index()
     {
         $etudiant = Etudiant::all();
-        return response()->json($etudiant);
+        return response()->json(['status' => 'success', 'data' => $etudiant]);
+
     }
 
     public function create(Request $req)
@@ -24,7 +25,6 @@ class EtudiantController extends Controller
             'email' => 'required','email','regex:/@emsi\.ma$/i',
             'password'=>'required',
             'groupe_id' => 'required',
-
         ]);
         
         $etud = Etudiant::create([
@@ -45,7 +45,7 @@ class EtudiantController extends Controller
     public function show(Etudiant $idEtudiant)
     {
         $etudiant = Etudiant::find($idEtudiant);
-        return response()->json($etudiant);
+        return response()->json(['status' => 'success', 'data' => $etudiant]);
     }
 
     public function update(Request $request,String $idEtudiant )
@@ -107,7 +107,7 @@ class EtudiantController extends Controller
         {
             // Récupérez les modules associés au groupe de l'étudiant
             $modules = $etudiant->groupe->modules;
-            return response()->json(['etudiant' => $etudiant, 'modules' => $modules]);
+            return response()->json(['etudiant' => $etudiant, 'data' => $modules]);
         } 
         else 
         {

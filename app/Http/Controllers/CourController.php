@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cour;
+use App\Models\Professeur;
+use App\Models\Groupe;
 use Illuminate\Http\Request;
 
 class CourController extends Controller
@@ -80,5 +82,26 @@ class CourController extends Controller
             return response()->json(['message' => 'Cours supprimé avec succès'], 200);
         }
     }
+
+
+    public function getCoursEnseignesPourGroupe($professeurId, $groupeId)
+    {
+        $professeur = Professeur::find($professeurId);
+        $groupe = Groupe::find($groupeId);
+
+        if ($professeur && $groupe) {
+            $modulesGroupe = $groupe->modules->pluck('id')->toArray();
+
+            $coursEnseignes = $professeur->cours()
+                ->whereIn('module_id', $modulesGroupe)
+                ->get();
+
+            return response()->json(['data' => $coursEnseignes]);
+        } else {
+            return response()->json(['message' => 'Professeur ou groupe non trouvé.'], 404);
+        }
+    }
+
+    
 
 }

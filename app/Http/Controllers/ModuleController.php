@@ -25,6 +25,6 @@ class ModuleController extends Controller
         // Récupérez les cours associés au module
         $cours = $module->cours;
 
-        return response()->json(['module' => $module, 'cours' => $cours]);
+        return response()->json(['module' => $module, 'data' => $cours]);
     }
 }

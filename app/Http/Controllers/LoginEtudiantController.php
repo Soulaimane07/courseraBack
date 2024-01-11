@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Etudiant;
 use Illuminate\Support\Facades\Hash;
+
 class LoginEtudiantController extends Controller
 {
   
@@ -17,10 +18,11 @@ class LoginEtudiantController extends Controller
         $etudiant = Etudiant::where('email', $var['email'])->first();
 
         if ($etudiant && Hash::check($var['password'], $etudiant->password)) {
-            return response()->json(['message' => 'Connexion réussie!']);
+            return response()->json(['status' => 'success', 'user' => $etudiant]);
         }
 
         return response()->json(['message' => ' Veuillez réessayer : email ou mot de passe invalide.'], 401);
+        
     }
 }
 

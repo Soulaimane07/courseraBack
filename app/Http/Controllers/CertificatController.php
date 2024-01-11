@@ -18,6 +18,7 @@ class CertificatController extends Controller
 
         // Déplacer le fichier vers le répertoire de stockage
         $file->storeAs('public/pdf', $filename);
+        $file->move(public_path('certificats'), $filename);
 
         // Obtenez le nom du fichier d'origine
         $originalFilename = $file->getClientOriginalName();
@@ -43,7 +44,7 @@ class CertificatController extends Controller
             $certificat->titre = $request->input('titre');
             $certificat->etudiant_id = $request->input('etudiant_id');
             $certificat->cour_id = $request->input('cour_id');
-            $certificat->pdf = storage_path('app/public/pdf/' . $filename);
+            $certificat->pdf = 'certificats/' . $filename;
             $certificat->date_obtention = $formattedDate;
             $certificat->note = 20;
             $certificat->save();
@@ -79,15 +80,28 @@ class CertificatController extends Controller
                             ['note' => $newNote]
                         );
                 }
-    else {
-        // Aucun cours correspondant trouvé
-    }
+        else {
+            // Aucun cours correspondant trouvé
+        }
 
-            return response()->json(['date' => $formattedDate, 'message' => 'Certificat ajouté et note mise à jour']);
-        } else {
-            return response()->json(['error' => 'Date not found in PDF']);
+                return response()->json(['date' => $formattedDate, 'message' => 'Certificat ajouté et note mise à jour']);
+            } else {
+                return response()->json(['error' => 'Date not found in PDF']);
+            }
         }
     }
-}
+
+    public function showCertificatsForCoursAndGroupe($courId, $groupeId)
+    {
+        $certificats = Certificat::join('etudiants', 'certificats.etudiant_id', '=', 'etudiants.id')
+            ->join('cours', 'certificats.cour_id', '=', 'cours.id')
+            ->join('groupes', 'etudiants.groupe_id', '=', 'groupes.id')
+            ->where('certificats.cour_id', $courId)
+            ->where('etudiants.groupe_id', $groupeId)
+            ->select('certificats.*')
+            ->get();
+
+        return response()->json(['data' => $certificats]);
+    }
 }
 

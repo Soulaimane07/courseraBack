@@ -193,7 +193,19 @@ class ProfesseurController extends Controller
         }
 
 
-
+        public function assignCours(Request $request, $professeurId){
+            $professeur = Professeur::find($professeurId);
+        
+            if (!$professeur) {
+                return response()->json(['status' => 'error', 'message' => 'Professeur non trouvé.']);
+            }
+        
+            $coursIds = $request->input('cours_ids');
+        
+            $professeur->cours()->attach($coursIds);
+        
+            return response()->json(['status' => 'success', 'professeur' => $professeur]);
+        }
 
 
 

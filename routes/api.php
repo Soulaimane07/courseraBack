@@ -28,19 +28,7 @@ use App\Http\Controllers\UtilisateurController;
 */
 
 
-//Login prof et etudiant
-Route::post('signup', [UtilisateurController::class, 'signup']);
-Route::post('login', [UtilisateurController::class, 'login']);
-Route::post('loginEtud', [LoginEtudiantController::class, 'loginEtudiant']);
-Route::post('loginProf', [LoginProfController::class, 'loginProf']);
-/**/
 
-//cours routes:
-Route::get('cours/index', [CourController::class, 'index']);
-Route::post('cours/create', [CourController::class, 'create']);
-Route::put('cours/update/{id}', [CourController::class, 'update']);
-Route::delete('cours/destroy/{id}', [CourController::class, 'destroy']);
-/**/
 
 //groupe routes
 Route::get('groupe/index', [GroupeController::class, 'index']);
@@ -51,22 +39,13 @@ Route::post('groupe/{groupeId}/{professeurIds}/assignerprofesseurs', [GroupeCont
 Route::delete('group/{groupeId}/{professeurId}/removeprof', [GroupeController::class, 'removeProfesseurFromGroupe']);
 Route::get('groupe/{id}/getEtudiants', [GroupeController::class, 'getEtudiants']);
 Route::delete('group/{groupeId}/{etudiantId}/removeEtud', [GroupeController::class, 'removeEtudiantFromGroupe']);
-Route::get('groupe/{groupeId}/modules', [GroupeController::class, 'showModules']);
 Route::post('groupe/{groupeId}/associemoduleGrp/{moduleId}', [GroupeController::class, 'associateModuleGrp']);
 
-
 //professeur routes:
-Route::get('prof/showOne/{id}', [ProfesseurController::class, 'showOne']);
-Route::get('prof/showAll', [ProfesseurController::class, 'showAll']);
-Route::post('prof/create', [ProfesseurController::class, 'create']);
-Route::put('prof/update/{id}', [ProfesseurController::class, 'update']);
-Route::delete('prof/destroy/{id}', [ProfesseurController::class, 'destroy']);
-Route::get('prof/{profId}/getGrp_Prof', [ProfesseurController::class, 'getGrp_Prof']);
-/**/
 Route::get('prof/{profId}/modules', [ProfesseurController::class, 'showModules']);
 Route::post('prof/{profId}/associemodule/{moduleId}', [ProfesseurController::class, 'associateModule']);
 Route::get('prof/{professeurId}/modules/{moduleId}/cours', [ProfesseurController::class, 'showCours']);
-
+Route::post('prof/{professeurId}/assignCours', [ProfesseurController::class, 'assignCours']);
 
 //Etudiant Routes:
 Route::get('etudiant/index', [EtudiantController::class, 'index']);
@@ -77,12 +56,59 @@ Route::delete('etudiant/destroy/{idEtudiant}', [EtudiantController::class, 'dest
 Route::get('etudiant/{etudiantId}/modules', [EtudiantController::class, 'showModules']);
 
 //Route Importer les fichiers Excels:
-Route::post('/simple-excel/importEtudiant', [EtudiantExcelController::class, 'importEtudiants']);
 Route::post('/simple-excel/import', [ProfexcelController::class, 'import']);
 
-// Route certificat:
-Route::post('/extractdate', [CertificatController::class, 'extractDateFromPDF']);
-Route::get('/certificats/{courId}/{groupeId}', [CertificatController::class, 'showCertificatsForCoursAndGroupe']);
+
+
+
+
+
+
+
+
+/* Used */
+
+//Login prof et etudiant
+Route::post('signup', [UtilisateurController::class, 'signup']);
+Route::post('login', [UtilisateurController::class, 'login']);
+Route::post('loginEtud', [LoginEtudiantController::class, 'loginEtudiant']);
+Route::post('loginProf', [LoginProfController::class, 'loginProf']);
+
+
+
+//cours routes:
+Route::get('cours/index', [CourController::class, 'index']);
+Route::post('cours/create', [CourController::class, 'create']);
+Route::put('cours/update/{id}', [CourController::class, 'update']);
+Route::delete('cours/destroy/{id}', [CourController::class, 'destroy']);
+Route::get('cours/{professeurId}/{groupeId}/getCoursEnseignesPourGroupe', [courController::class, 'getCoursEnseignesPourGroupe']);
+
+
+
+//Route filiere:
+Route::get('filiere/getFilieres', [FiliereController::class, 'getFilieres']);
+Route::get('filiere/{filiereId}/groupes', [FiliereController::class, 'showGroupes']);
+
+
+
+// Routes Année:
+Route::get('annee/getAnnees', [AnneeController::class, 'getAnnees']);
+
+
+
+//groupe routes
+Route::get('groupe/{groupeId}/modules', [GroupeController::class, 'showModules']);
+Route::get('groupe/{professeurId}/{filiereId}/getGroupesEnseignesPourFiliere', [GroupeController::class, 'getGroupesEnseignesPourFiliere']);
+
+
+
+//professeur routes:
+Route::get('prof/showOne/{id}', [ProfesseurController::class, 'showOne']);
+Route::get('prof/showAll', [ProfesseurController::class, 'showAll']);
+Route::post('prof/create', [ProfesseurController::class, 'create']);
+Route::put('prof/update/{id}', [ProfesseurController::class, 'update']);
+Route::delete('prof/destroy/{id}', [ProfesseurController::class, 'destroy']);
+Route::get('prof/{profId}/getGrp_Prof', [ProfesseurController::class, 'getGrp_Prof']);
 
 
 
@@ -91,11 +117,19 @@ Route::get('module/getModules', [ModuleController::class, 'getModules']);
 Route::get('module/getModule/{id}', [ModuleController::class, 'getModule']);
 Route::get('module/{moduleId}/cours', [ModuleController::class, 'showCours']);
 
-//Route filiere:
-Route::get('filiere/getFilieres', [FiliereController::class, 'getFilieres']);
-Route::get('filiere/{filiereId}/groupes', [FiliereController::class, 'showGroupes']);
 
 
-// Routes Année:
-Route::get('annee/getAnnees', [AnneeController::class, 'getAnnees']);
-/**/
+// Route certificat:
+Route::get('/certificats/{courId}/{groupeId}', [CertificatController::class, 'showCertificatsForCoursAndGroupe']);
+Route::post('/extractdate', [CertificatController::class, 'extractDateFromPDF']);
+
+
+
+//Route Importer les fichiers Excels:
+Route::post('/simple-excel/importEtudiant', [EtudiantExcelController::class, 'importEtudiants']);
+
+
+
+
+//Etudiant Routes:
+Route::get('etudiant/{etudiantId}/modules', [EtudiantController::class, 'showModules']);

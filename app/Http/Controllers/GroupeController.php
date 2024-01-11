@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Groupe;
 use App\Models\Module;
 use App\Models\Professeur;
+use App\Models\Filiere;
 
 
 class GroupeController extends Controller
@@ -105,7 +106,7 @@ class GroupeController extends Controller
 
             $etudiants = $groupe->etudiants;
 
-            return response()->json(['etudiants' => $etudiants]);
+            return response()->json(['data' => $etudiants]);
         }
 // Supprimer un etud d'un grp:
     public function removeEtudiantFromGroupe($groupeId, $etudiantId)
@@ -132,7 +133,7 @@ class GroupeController extends Controller
 
         // Supprimez la relation chargée par with('modules') du groupe: hit fl'affichage kaytl3o les modules deux fois
         unset($groupe->modules);
-        return response()->json(['groupe' => $groupe, 'modules' => $modules]);
+        return response()->json(['groupe' => $groupe, 'data' => $modules]);
     }
     //Associer un module à un grp!
     public function associateModuleGrp($groupeId, $moduleId)
@@ -145,4 +146,19 @@ class GroupeController extends Controller
         return response()->json(['message' => 'Module associé avec succès']);
     }
 
+
+    public function getGroupesEnseignesPourFiliere($professeurId, $filiereId)
+    {
+        
+        $professeur = Professeur::find($professeurId);
+        $filiere = Filiere::find($filiereId);
+
+        if ($professeur && $filiere) {
+            $groupesEnseignes = $professeur->groupes()->where('filiere_id', $filiereId)->get();
+
+            return response()->json(['data' => $groupesEnseignes]);
+        } else {
+            return response()->json(['message' => 'Professeur ou filière non trouvé.'], 404);
+        }
+    }
 }
