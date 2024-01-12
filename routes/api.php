@@ -31,18 +31,14 @@ use App\Http\Controllers\UtilisateurController;
 
 
 //groupe routes
-Route::get('groupe/index', [GroupeController::class, 'index']);
 Route::post('groupe/create', [GroupeController::class, 'create']);
 Route::put('groupe/update/{id}', [GroupeController::class, 'update']);
 Route::delete('groupe/destroy/{id}', [GroupeController::class, 'destroy']);
-Route::post('groupe/{groupeId}/{professeurIds}/assignerprofesseurs', [GroupeController::class, 'assignerProfesseurAuGroupe']);
 Route::delete('group/{groupeId}/{professeurId}/removeprof', [GroupeController::class, 'removeProfesseurFromGroupe']);
 Route::get('groupe/{id}/getEtudiants', [GroupeController::class, 'getEtudiants']);
 Route::delete('group/{groupeId}/{etudiantId}/removeEtud', [GroupeController::class, 'removeEtudiantFromGroupe']);
-Route::post('groupe/{groupeId}/associemoduleGrp/{moduleId}', [GroupeController::class, 'associateModuleGrp']);
 
 //professeur routes:
-Route::get('prof/{profId}/modules', [ProfesseurController::class, 'showModules']);
 Route::post('prof/{profId}/associemodule/{moduleId}', [ProfesseurController::class, 'associateModule']);
 Route::get('prof/{professeurId}/modules/{moduleId}/cours', [ProfesseurController::class, 'showCours']);
 Route::post('prof/{professeurId}/assignCours', [ProfesseurController::class, 'assignCours']);
@@ -59,6 +55,9 @@ Route::get('etudiant/{etudiantId}/modules', [EtudiantController::class, 'showMod
 Route::post('/simple-excel/import', [ProfexcelController::class, 'import']);
 
 
+Route::get('module/{filiereId}/afficherModules', [ModuleController::class, 'afficherModulesDeFiliere']);
+Route::delete('module/{moduleId}/supprimerModule', [ModuleController::class, 'supprimerModule']);
+Route::put('module/{moduleId}/modifierModule', [ModuleController::class, 'modifierModule']);
 
 
 
@@ -86,6 +85,9 @@ Route::get('cours/{professeurId}/{groupeId}/getCoursEnseignesPourGroupe', [courC
 
 
 //Route filiere:
+Route::post('filiere/ajouterFiliere', [FiliereController::class, 'ajouterFiliere']);
+Route::put('filiere/{filiereId}/modifierFiliere', [FiliereController::class, 'modifierFiliere']);
+Route::delete('filiere/{filiereId}/supprimerFiliere', [FiliereController::class, 'supprimerFiliere']);
 Route::get('filiere/getFilieres', [FiliereController::class, 'getFilieres']);
 Route::get('filiere/{filiereId}/groupes', [FiliereController::class, 'showGroupes']);
 
@@ -97,12 +99,17 @@ Route::get('annee/getAnnees', [AnneeController::class, 'getAnnees']);
 
 
 //groupe routes
+Route::get('groupe/index', [GroupeController::class, 'index']);
+Route::post('groupe/create', [GroupeController::class, 'create']);
 Route::get('groupe/{groupeId}/modules', [GroupeController::class, 'showModules']);
+Route::post('groupe/{groupeId}/{professeurIds}/assignerprofesseurs', [GroupeController::class, 'assignerProfesseurAuGroupe']);
 Route::get('groupe/{professeurId}/{filiereId}/getGroupesEnseignesPourFiliere', [GroupeController::class, 'getGroupesEnseignesPourFiliere']);
+Route::post('groupe/{groupeId}/associemoduleGrp/{moduleId}', [GroupeController::class, 'associateModuleGrp']);
 
 
 
 //professeur routes:
+Route::get('prof/{profId}/modules', [ProfesseurController::class, 'showModules']);
 Route::get('prof/showOne/{id}', [ProfesseurController::class, 'showOne']);
 Route::get('prof/showAll', [ProfesseurController::class, 'showAll']);
 Route::post('prof/create', [ProfesseurController::class, 'create']);
@@ -113,10 +120,11 @@ Route::get('prof/{profId}/getGrp_Prof', [ProfesseurController::class, 'getGrp_Pr
 
 
 //Route module:
+Route::post('module/ajouterModule', [ModuleController::class, 'ajouterModule']);
 Route::get('module/getModules', [ModuleController::class, 'getModules']);
 Route::get('module/getModule/{id}', [ModuleController::class, 'getModule']);
 Route::get('module/{moduleId}/cours', [ModuleController::class, 'showCours']);
-
+Route::get('module/{filiereId}/getmodulesParFiliere', [ModuleController::class, 'getmodulesParFiliere']);
 
 
 // Route certificat:
@@ -130,6 +138,20 @@ Route::post('/simple-excel/importEtudiant', [EtudiantExcelController::class, 'im
 
 
 
-
 //Etudiant Routes:
 Route::get('etudiant/{etudiantId}/modules', [EtudiantController::class, 'showModules']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

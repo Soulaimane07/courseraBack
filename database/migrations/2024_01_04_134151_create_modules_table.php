@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
+            $table->foreignId('filiere_id')->constrained()
+            ->onUpdate('Cascade')
+            ->onDelete('Cascade');
             $table->timestamps();
         });
     }

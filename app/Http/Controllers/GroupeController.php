@@ -25,13 +25,11 @@ class GroupeController extends Controller
         $req->validate([
             'nom' => 'required',
             'filiere_id'=> 'required'
-
         ]);
 
         $groupe = Groupe::create([
             'nom' => $req->nom,
             'filiere_id' => $req->filiere_id,
-
         ]);
 
         return response()->json(['status' => 'success', 'groupe' => $groupe]);

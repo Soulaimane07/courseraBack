@@ -46,48 +46,40 @@ class CertificatController extends Controller
             $certificat->cour_id = $request->input('cour_id');
             $certificat->pdf = 'certificats/' . $filename;
             $certificat->date_obtention = $formattedDate;
-            $certificat->note = 20;
-            $certificat->save();
+                // recupéerer les infors du cours
+                $cours = Cour::find($request->input('cour_id'));
 
-            $cours = Cour::where('dateFin', '>=', $formattedDate) ->where('deadline_control', '>=', $formattedDate)->first();
-            if ($cours) {
-                $dateFinCours = $cours->dateFin;
-                $deadlineControl = $cours->deadline_control;
-                if ($formattedDate > $deadlineControl) {
-                    // La date extraite est après la deadline de contrôle, la note est 0
-                    $newNote = 0;
-                }
-                elseif ($formattedDate <= $dateFinCours) 
-                {    
-                    $newNote = 20;
+                if ($cours) 
+                {
+                    $dateFinCours = $cours->dateFin;
+                    $deadlineControl = $cours->deadline_control;
 
-                    // Mettre à jour la note du certificat
-                    // $certificat = Certificat::updateOrCreate(
-                    //     ['date_obtention' => $formattedDate, 'cour_id' => $cours->id],
-                    //     ['note' => $newNote]
-                    // );
-                }
-                elseif($formattedDate > $dateFinCours && $formattedDate <= $deadlineControl) {
-                        // Calculer le nombre de jours de retard
-                        $daysLate = Carbon::parse($formattedDate)->diffInDays(Carbon::parse($dateFinCours));
-                
-                        // Appliquer une pénalité de -2 par jour de retard
-                        $newNote = max(20 - ($daysLate * 2), 0);
-                
-                        // Mettre à jour la note du certificat
-                        $certificat = Certificat::updateOrCreate(
-                            ['date_obtention' => $formattedDate, 'cour_id' => $cours->id],
-                            ['note' => $newNote]
-                        );
-                }
-        else {
-            // Aucun cours correspondant trouvé
-        }
+                    // Calculer la note en fonction de la date extraite
+                    if ($formattedDate <= $dateFinCours) {
+                        // La date extraite est avant ou égale à la date de fin du cours
+                        $certificat->note = 20;
+                    } elseif ($formattedDate <= $deadlineControl) {
+                        // La date extraite est après la date de fin du cours mais avant la deadline de contrôle
+                        $daysLate = $carbonDate->diffInDays(Carbon::parse($dateFinCours));
+                        $certificat->note = max(0, 20 - ($daysLate * 2));
+                    } else {
+                        // La date extraite dépasse la deadline de contrôle
+                        $certificat->note = 0;
+                    }
 
-                return response()->json(['date' => $formattedDate, 'message' => 'Certificat ajouté et note mise à jour']);
-            } else {
-                return response()->json(['error' => 'Date not found in PDF']);
-            }
+                    // Enregistrement de la certification dans la base de données
+                    $certificat->save();
+
+                    return response()->json(['date' => $formattedDate, 'message' => 'Certificat ajouté et note mise à jour']);
+                } 
+                else 
+                {
+                    return response()->json(['error' => 'Aucun cours correspondant trouvé']);
+                }
+        } 
+        else 
+        {
+            return response()->json(['error' => 'Aucune date trouvé dans le PDF']);
         }
     }
 

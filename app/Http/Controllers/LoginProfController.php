@@ -12,10 +12,10 @@ class LoginProfController extends Controller
         $infos = $request->only('email', 'password');
         
     
-        $etudiant = Professeur::where('email', $infos['email'])->first();
+        $prof = Professeur::where('email', $infos['email'])->first();
 
-        if ($etudiant && Hash::check($infos['password'], $etudiant->password)) {
-            return response()->json(['message' => 'Connexion réussie!']);
+        if ($prof && Hash::check($infos['password'], $prof->password)) {
+            return response()->json(['status' => 'success', 'user' => $prof]);
         }
 
         return response()->json(['message' => 'Veuillez réessayer : email ou mot de passe invalide.'], 401);

@@ -47,16 +47,6 @@ class CourController extends Controller
     {
         $courUpdate= Cour::find($id);
 
-        $request->validate([
-            'lien' => 'required',
-            'titre' => 'required',
-            'desc' => 'required',
-            'dateDebut' => 'required',
-            'dateFin' => 'required',
-            'deadline_control'=>'required',
-            'module_id'=>'required',
-
-        ]);
         $courUpdate->update([
             'lien' => $request->lien,
             'titre' => $request->titre,
