@@ -128,6 +128,7 @@ Route::get('module/{filiereId}/getmodulesParFiliere', [ModuleController::class, 
 
 
 // Route certificat:
+Route::get('certificat/CertificatCoursManquants/{etudiantId}/{moduleId}', [CertificatController::class, 'getCertificatsEtCoursManquants']);
 Route::get('/certificats/{courId}/{groupeId}', [CertificatController::class, 'showCertificatsForCoursAndGroupe']);
 Route::post('/extractdate', [CertificatController::class, 'extractDateFromPDF']);
 

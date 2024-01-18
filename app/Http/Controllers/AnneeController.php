@@ -9,7 +9,6 @@ class AnneeController extends Controller
     public function getAnnees()
     {
         $annees = Annee::all();
-
         return response()->json(['status' => 'success', 'data' => $annees]);
     }
 }

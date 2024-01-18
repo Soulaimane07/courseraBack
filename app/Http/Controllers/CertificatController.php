@@ -95,5 +95,30 @@ class CertificatController extends Controller
 
         return response()->json(['data' => $certificats]);
     }
+
+    public function getCertificatsEtCoursManquants($etudiantId, $moduleId)
+    {
+        // Récupération de tous les cours du module
+        $coursModule = DB::table('cours')
+            ->where('module_id', $moduleId)
+            ->pluck('id');
+        // Récupération des certificats de l'étudiant pour les cours du module donnée:
+        $certificatsEtudiant = DB::table('certificats')
+            ->whereIn('cour_id', $coursModule)
+            ->where('etudiant_id', $etudiantId)
+            ->pluck('cour_id');
+        // jbna le nombre total dyal les certificats pour l'étudiant dans le module
+        $nombreCertificats = count($certificatsEtudiant);
+
+        // Récupération des cours limakhdach fihum certificat
+        $coursManquants = DB::table('cours')
+            ->where('module_id', $moduleId)
+            ->whereNotIn('id', $certificatsEtudiant)
+            ->get();
+        return response()->json([
+            'data' => $nombreCertificats,
+            'coursManquants' => $coursManquants,
+        ]);
+    }
 }
 
